@@ -1,0 +1,49 @@
+{
+ "source": "https://github.com/rolux/gtadb.org",
+ "source_commit": "24af4bf72e3adcdf97548278a3dca61555558c0c",
+ "tiles_gta5_satellite": {
+  "template": "maps/tiles/5/satellite/{z}/{z},{y},{x}.jpg",
+  "zooms": {
+   "0": {
+    "files": 6,
+    "bytes": 28581
+   },
+   "1": {
+    "files": 20,
+    "bytes": 98853
+   },
+   "2": {
+    "files": 48,
+    "bytes": 308982
+   },
+   "3": {
+    "files": 140,
+    "bytes": 1037926
+   },
+   "4": {
+    "files": 513,
+    "bytes": 3843456
+   },
+   "5": {
+    "files": 1961,
+    "bytes": 14912797
+   },
+   "6": {
+    "files": 7632,
+    "bytes": 54478272
+   }
+  }
+ },
+ "photos_ig": {
+  "template": "map/photos/{5|6}/{Lid},ig.jpg",
+  "5": {
+   "files": 947,
+   "bytes": 38637984
+  },
+  "6": {
+   "files": 714,
+   "bytes": 58195129
+  }
+ },
+ "missing_in_gtadb": []
+}

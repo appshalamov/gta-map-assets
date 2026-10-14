@@ -1,0 +1,37 @@
+# Докачать из gtadb новые кадры игры и обновлённые плитки, когда меняются данные приложения.
+name: sync-from-gtadb
+on:
+  schedule:
+    - cron: '23 */3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: sync-from-gtadb
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - name: Данные приложения Secret Base (data/map)
+        uses: actions/checkout@v6
+        with:
+          repository: appshalamov/gta-cheats-demo
+          path: _app
+          sparse-checkout: data/map
+      - name: Синхронизация с gtadb (git, blobless sparse)
+        run: python3 -I tools/sync_from_gtadb.py --gtadb "$RUNNER_TEMP/gtadb.org" --app-data _app/data/map
+      - name: Коммит и пересборка Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A maps map manifest.json gtadb-LICENSE gtadb-LICENSE-DATA
+          if git diff --cached --quiet; then echo 'Без изменений'; exit 0; fi
+          git commit -q -m "sync: gtadb $(jq -r .source_commit manifest.json | cut -c1-7)"
+          git push
+          gh api -X POST "repos/$GITHUB_REPOSITORY/pages/builds" || true
