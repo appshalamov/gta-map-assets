@@ -79,6 +79,9 @@ python3 -I tools/sync_from_gtadb.py --app-data "/Volumes/Work SSD/Система
 
 Рабочая копия лежит на внешнем SSD (exFAT): macOS создаёт рядом с файлами служебные `._*` —
 они в `.gitignore`. Из-за кластера exFAT 128 КБ папка занимает на диске ~3 ГБ при 172 МБ данных.
+Сама git-папка — на Маке: `~/Developer/gta-map-assets.git` (в рабочей копии вместо папки `.git` лежит
+файл `.git` со ссылкой). Внутри `.git` на exFAT те же `._*` ломают git («non-monotonic index»).
+На другом Маке: `git clone https://github.com/appshalamov/gta-map-assets.git` — или поправить путь в файле `.git`.
 
 ## Свой домен
 
