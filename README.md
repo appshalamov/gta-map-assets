@@ -50,6 +50,7 @@ GitHub Pages отдаёт `Access-Control-Allow-Origin: *` и `Cache-Control: ma
 
 Кадры — только те, что нужны приложению (не все 4 600 из gtadb): ссылки `…/map/photos/{5|6}/{Lid},ig.jpg`
 в `data/map/gta5.json` и `gta6.json` и точки слоя `gtadb_gta5.json` / `gtadb_gta6.json`
+(основное приложение и `beta/data/map`)
 (`points[i][0]` = Lid, `points[i][7] == 1` — кадр игры есть).
 
 **Не переносится и не должно сюда попасть:**
@@ -60,7 +61,7 @@ GitHub Pages отдаёт `Access-Control-Allow-Origin: *` и `Cache-Control: ma
 ## Обновление
 
 Автоматически: GitHub Actions `sync-from-gtadb` (`.github/workflows/sync.yml`) раз в 3 часа берёт
-`data/map` из `appshalamov/gta-cheats-demo`, делает blobless sparse-клон gtadb, докачивает только
+`data/map` и `beta/data/map` из `appshalamov/gta-cheats-demo`, делает blobless sparse-клон gtadb, докачивает только
 недостающие или изменившиеся файлы (сверка по git-хэшу), коммитит и пересобирает Pages.
 Вручную запустить сразу после правки данных приложения:
 
@@ -71,7 +72,9 @@ gh workflow run sync.yml -R appshalamov/gta-map-assets
 Локально (Mac, клон gtadb в `~/Developer/gtadb.org`, только стандартная библиотека Python):
 
 ```bash
-python3 -I tools/sync_from_gtadb.py --app-data "/Volumes/Work SSD/Система/Cloude/GTA 5:6 /cheats-pwa/data/map"
+python3 -I tools/sync_from_gtadb.py \
+  --app-data "/Volumes/Work SSD/Система/Cloude/GTA 5:6 /cheats-pwa/data/map" \
+  --app-data "/Volumes/Work SSD/Система/Cloude/GTA 5:6 /cheats-pwa/beta/data/map"
 ```
 
 Файлы только добавляются и обновляются — то, что пропало из данных приложения, не удаляется

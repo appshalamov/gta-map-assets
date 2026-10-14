@@ -15,7 +15,8 @@
 Запуск (без venv — только стандартная библиотека):
   python3 -I tools/sync_from_gtadb.py \
       --gtadb ~/Developer/gtadb.org \
-      --app-data "/Volumes/Work SSD/Система/Cloude/GTA 5:6 /cheats-pwa/data/map"
+      --app-data "/Volumes/Work SSD/Система/Cloude/GTA 5:6 /cheats-pwa/data/map" \
+      --app-data "/Volumes/Work SSD/Система/Cloude/GTA 5:6 /cheats-pwa/beta/data/map"
 Клон gtadb, если его нет, создаётся сам (blobless + sparse, depth 1).
 С --strict код выхода 1, если нужных кадров нет в gtadb (список — в выводе).
 """
@@ -39,17 +40,18 @@ def git(gtadb, *args, **kw):
     return subprocess.run(["git", "-C", gtadb, *args], check=True, **kw)
 
 
-def needed_lids(app_data):
+def needed_lids(app_dirs):
     need = {"5": set(), "6": set()}
-    for name in ("gta5.json", "gta6.json"):
-        with open(os.path.join(app_data, name), encoding="utf-8") as f:
-            for ver, lid in PHOTO_RE.findall(f.read()):
-                need[ver].add(lid)
-    for name, ver in (("gtadb_gta5.json", "5"), ("gtadb_gta6.json", "6")):
-        with open(os.path.join(app_data, name), encoding="utf-8") as f:
-            for p in json.load(f)["points"]:
-                if len(p) > 7 and p[7] == 1:
-                    need[ver].add(p[0])
+    for app_data in app_dirs:
+        for name in ("gta5.json", "gta6.json"):
+            with open(os.path.join(app_data, name), encoding="utf-8") as f:
+                for ver, lid in PHOTO_RE.findall(f.read()):
+                    need[ver].add(lid)
+        for name, ver in (("gtadb_gta5.json", "5"), ("gtadb_gta6.json", "6")):
+            with open(os.path.join(app_data, name), encoding="utf-8") as f:
+                for p in json.load(f)["points"]:
+                    if len(p) > 7 and p[7] == 1:
+                        need[ver].add(p[0])
     return need
 
 
@@ -78,7 +80,8 @@ def remote_tree(gtadb):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--gtadb", default=os.path.expanduser("~/Developer/gtadb.org"))
-    ap.add_argument("--app-data", required=True)
+    ap.add_argument("--app-data", required=True, action="append",
+                    help="папка data/map приложения; можно несколько раз (основная и beta)")
     ap.add_argument("--no-fetch", action="store_true", help="не обновлять клон gtadb")
     ap.add_argument("--strict", action="store_true", help="код 1, если нужных кадров нет в gtadb")
     a = ap.parse_args()
