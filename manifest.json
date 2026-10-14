@@ -72,8 +72,8 @@
  "photos_ig": {
   "template": "map/photos/{5|6}/{Lid},ig.jpg",
   "5": {
-   "files": 947,
-   "bytes": 38637984
+   "files": 953,
+   "bytes": 38896573
   },
   "6": {
    "files": 714,
