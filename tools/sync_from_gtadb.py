@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Обновить зеркало gtadb: плитки GTA 5 (satellite) и кадры игры ,ig.jpg.
+"""Обновить зеркало gtadb: плитки GTA 5 (radar — основной, satellite) и кадры игры ,ig.jpg.
 
 Берёт файлы из sparse-клона rolux/gtadb.org (git, как просит автор gtadb),
 а список нужных кадров — из данных приложения Secret Base (data/map):
@@ -31,7 +31,9 @@ import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GTADB_URL = "https://github.com/rolux/gtadb.org.git"
-TILES = "maps/tiles/5/satellite"
+# radar — основной набор: карта как в меню паузы игры (решение Игоря 14.10.2026)
+TILESETS = ("radar", "satellite")
+TILES = {t: f"maps/tiles/5/{t}" for t in TILESETS}
 PHOTO_RE = re.compile(r"map/photos/([56])/(L\d+),ig\.jpg")
 LICENSES = {"LICENSE": "gtadb-LICENSE", "LICENSE-DATA": "gtadb-LICENSE-DATA"}
 
@@ -66,7 +68,7 @@ def blob_sha(path):
 
 def remote_tree(gtadb):
     # без -l: размер блоба заставил бы git докачивать каждый блоб по одному
-    out = git(gtadb, "ls-tree", "-r", "HEAD", "--", TILES, "map/photos/5", "map/photos/6",
+    out = git(gtadb, "ls-tree", "-r", "HEAD", "--", *TILES.values(), "map/photos/5", "map/photos/6",
               *LICENSES, capture_output=True, text=True).stdout
     tree = {}
     for line in out.splitlines():
@@ -96,7 +98,8 @@ def main():
     tree = remote_tree(a.gtadb)  # только деревья — блобы не качаются
 
     need = needed_lids(a.app_data)
-    wanted = {p: p for p in tree if p.startswith(TILES + "/") and p.endswith(".jpg")}
+    wanted = {p: p for p in tree if p.endswith(".jpg")
+              and any(p.startswith(d + "/") for d in TILES.values())}
     missing = []
     for ver in "56":
         for lid in sorted(need[ver]):
@@ -119,12 +122,14 @@ def main():
             os.makedirs(os.path.dirname(out) or REPO, exist_ok=True)
             shutil.copyfile(os.path.join(a.gtadb, src), out)  # без xattr
 
-    zooms, photos = {}, {}
-    for p in (p for p in wanted if p.startswith(TILES + "/")):
-        z = p.split("/")[4]
-        zooms.setdefault(z, {"files": 0, "bytes": 0})
-        zooms[z]["files"] += 1
-        zooms[z]["bytes"] += os.path.getsize(os.path.join(REPO, p))
+    zooms, photos = {t: {} for t in TILESETS}, {}
+    for p in wanted:
+        parts = p.split("/")
+        if parts[0] != "maps":
+            continue
+        zs = zooms[parts[3]].setdefault(parts[4], {"files": 0, "bytes": 0})
+        zs["files"] += 1
+        zs["bytes"] += os.path.getsize(os.path.join(REPO, p))
     for ver in "56":
         d = os.path.join(REPO, "map/photos", ver)
         names = [n for n in os.listdir(d) if n.endswith(",ig.jpg") and not n.startswith("._")] \
@@ -135,10 +140,10 @@ def main():
     manifest = {
         "source": "https://github.com/rolux/gtadb.org",
         "source_commit": commit,
-        "tiles_gta5_satellite": {
-            "template": TILES + "/{z}/{z},{y},{x}.jpg",
-            "zooms": dict(sorted(zooms.items(), key=lambda kv: int(kv[0]))),
-        },
+        "tiles_gta5": {t: {
+            "template": TILES[t] + "/{z}/{z},{y},{x}.jpg",
+            "zooms": dict(sorted(zooms[t].items(), key=lambda kv: int(kv[0]))),
+        } for t in TILESETS},
         "photos_ig": {"template": "map/photos/{5|6}/{Lid},ig.jpg", **photos},
         "missing_in_gtadb": missing,
     }
@@ -154,7 +159,8 @@ def main():
 
     print(json.dumps({"downloaded": len(todo), "already_here": len(wanted) - len(todo),
                       "missing_in_gtadb": missing, "photos_ig": photos,
-                      "tiles": {z: v["files"] for z, v in manifest["tiles_gta5_satellite"]["zooms"].items()}},
+                      "tiles": {t: {z: v["files"] for z, v in m["zooms"].items()}
+                                for t, m in manifest["tiles_gta5"].items()}},
                      ensure_ascii=False))
     return 1 if missing and a.strict else 0
 
