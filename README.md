@@ -22,6 +22,7 @@ simply `git pull`»), а у raw-адресов GitHub лимиты на анон
 | Плитка GTA V, спутник (запасной) | `https://appshalamov.github.io/gta-map-assets/maps/tiles/5/satellite/{z}/{z},{y},{x}.jpg` |
 | Кадр игры GTA V | `https://appshalamov.github.io/gta-map-assets/map/photos/5/{Lid},ig.jpg` |
 | Кадр игры GTA VI | `https://appshalamov.github.io/gta-map-assets/map/photos/6/{Lid},ig.jpg` |
+| Чистый широкий кадр GTA VI вместо мелкой вырезки (официальные скриншоты и трейлеры Rockstar, не из gtadb; синхронизация их не трогает) | `https://appshalamov.github.io/gta-map-assets/official/6/{Lid}.jpg` |
 | Что лежит (зумы, число файлов, коммит gtadb) | `https://appshalamov.github.io/gta-map-assets/manifest.json` |
 
 Плитки (оба набора): z = 0…6 (зум gtadb; в MapLibre это z + 2, т. е. minzoom 2 … maxzoom 8), мир 1024·2^z px,
