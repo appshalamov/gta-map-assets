@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/rolux/gtadb.org",
- "source_commit": "1cc582e10f89da83792a180dfb4a313e7f511f17",
+ "source_commit": "c83c83ca9966425dd77a035cd5aa7a12cd697cc9",
  "tiles_gta5": {
   "radar": {
    "template": "maps/tiles/5/radar/{z}/{z},{y},{x}.jpg",
@@ -77,7 +77,7 @@
   },
   "6": {
    "files": 714,
-   "bytes": 58696579
+   "bytes": 58892913
   }
  },
  "missing_in_gtadb": []
