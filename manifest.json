@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/rolux/gtadb.org",
- "source_commit": "5c1d69ff864623d181da5457afaacd00b623e1a4",
+ "source_commit": "d406fea099e1df2bce42fd6b87eed04bce646629",
  "tiles_gta5": {
   "radar": {
    "template": "maps/tiles/5/radar/{z}/{z},{y},{x}.jpg",
@@ -80,45 +80,5 @@
    "bytes": 59291738
   }
  },
- "missing_in_gtadb": [],
- "tiles_gta6": {
-  "day": {
-   "template": "maps/tiles/6/day/{z}/{z},{y},{x}.jpg",
-   "source": "gtadb «day» 3e7fac70 (19.11.2026) — карта меню паузы вышедшей GTA VI; © Rockstar Games",
-   "zooms": {
-    "0": {
-     "files": 12,
-     "bytes": 51226
-    },
-    "1": {
-     "files": 30,
-     "bytes": 160409
-    },
-    "2": {
-     "files": 99,
-     "bytes": 540303
-    },
-    "3": {
-     "files": 374,
-     "bytes": 1750712
-    },
-    "4": {
-     "files": 1496,
-     "bytes": 5641415
-    },
-    "5": {
-     "files": 5829,
-     "bytes": 18037419
-    },
-    "6": {
-     "files": 23182,
-     "bytes": 60025764
-    }
-   }
-  },
-  "yanis18": {
-   "template": "maps/tiles/6/yanis18/{z}/{z},{y},{x}.jpg",
-   "note": "запасная, карта сообщества"
-  }
- }
+ "missing_in_gtadb": []
 }
